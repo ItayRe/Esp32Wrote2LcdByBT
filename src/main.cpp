@@ -19,15 +19,17 @@ String message = "";
 char incomingChar;
 
 void setup() {
-  // put your setup code here, to run once:
     Serial.begin(921600);
     SerialBT.begin("ESP32test"); //Bluetooth device name
     Serial.println("The device started, now you can pair it with bluetooth!");
 
+    // If the display failed
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         Serial.println(F("SSD1306 allocation failed"));
         for (;;); // Don't proceed, loop forever
     }
+
+    // If everything is fine, display a hello message and wait 2 seconds
     // Clear the buffer.
     display.clearDisplay();
     // Display Text
@@ -37,20 +39,12 @@ void setup() {
     display.println("Hello world!");
     display.display();
     delay(2000);
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
-    display.setCursor(0, 28);
-    display.println("Goodbye!");
-    display.display();
-    display.println("");
-    display.display();
 }
 
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
+    // If bluetooth is available start search for inputs
     if (SerialBT.available()) {
         char incomingChar = SerialBT.read();
         if (incomingChar != '\n'){
@@ -63,7 +57,10 @@ void loop() {
     }
     
     if (message == "hello"){
+        // Print the message to the bluetooth terminal
         Serial.println(message);
+
+        // Print the message to the lcd screen
         display.clearDisplay();
         display.setTextSize(1);
         display.setTextColor(WHITE);
